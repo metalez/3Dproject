@@ -1,0 +1,11 @@
+/home/initial/Bureau/clion-2016.3.5/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/initial/3Dgraphics/practical7
+CMake Error at CMakeLists.txt:3 (message):
+  Dear student, you just tried to launch cmake in another directory than
+  build/.  We encourage you to be more careful in the future and NEVER DO
+  THAT AGAIN.  Now the build system will stop, and you will remove
+  ../CMakeCache.txt and ../CMakefiles/.
+
+  --Your 3D Computer Graphics teachers.
+
+
+-- Configuring incomplete, errors occurred!
