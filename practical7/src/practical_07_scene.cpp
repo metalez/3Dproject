@@ -15,7 +15,16 @@
 #include "../include/dynamics_rendering/SpringListRenderable.hpp"
 #include "../include/dynamics_rendering/ControlledForceFieldRenderable.hpp"
 #include "../include/dynamics_rendering/QuadRenderable.hpp"
+#include "../include/ShaderProgram.hpp"
+#include "../include/Viewer.hpp"
+#include "../include/FrameRenderable.hpp"
+#include "../include/lighting/DirectionalLightRenderable.hpp"
 
+#include "../include/texturing/TexturedPlaneRenderable.hpp"
+#include "../include/texturing/TexturedCubeRenderable.hpp"
+#include "../include/texturing/MultiTexturedCubeRenderable.hpp"
+#include "../include/texturing/MipMapCubeRenderable.hpp"
+#include "../include/texturing/TexturedMeshRenderable.hpp"
 
 void practical07_particles(Viewer& viewer,
     DynamicSystemPtr& system, DynamicSystemRenderablePtr& systemRenderable);
@@ -318,9 +327,32 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
         = std::make_shared<ShaderProgram>("../shaders/flatVertex.glsl","../shaders/flatFragment.glsl");
     viewer.addShaderProgram(flatShader);
 
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    std::string filename;
+    MaterialPtr pearl = Material::Pearl();
+    ShaderProgramPtr texShader
+            = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
+                                              "../shaders/textureFragment.glsl");
+    viewer.addShaderProgram(texShader);
+
     //Position the camera
     viewer.getCamera().setViewMatrix(
         glm::lookAt(glm::vec3(0, -15, 15), glm::vec3(0,0,0), glm::vec3(0,0,1)) );
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    glm::vec3 lightPosition(0.0,0.0,5.0);
+    DirectionalLightRenderablePtr directionalLightRenderable = std::make_shared<DirectionalLightRenderable>(flatShader, directionalLight, lightPosition);
+    localTransformation = glm::scale(glm::mat4(1.0), glm::vec3(0.5,0.5,0.5));
+    directionalLightRenderable->setLocalTransform(localTransformation);
+    viewer.setDirectionalLight(directionalLight);
+    viewer.addRenderable(directionalLightRenderable);
+
+
+
 
     //Initialize two particles with position, velocity, mass and radius and add it to the system
     glm::vec3 px(0.0, 0.0, 0.0);
@@ -367,6 +399,9 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     PlanePtr floor = std::make_shared<Plane>( planeNormal, planePoint);
     system->addPlaneObstacle(floor);
 
+
+
+
     //Create  plane renderables to display each obstacle
     //Add them to the system renderable
     glm::vec3 x1, x2, x3, x4;
@@ -377,7 +412,39 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     x4 = glm::vec3(10, -10, 5);
     color = glm::vec4(0.4, 0.2, 0.2, 1.0);
     PlaneRenderablePtr p1Renderable = std::make_shared<QuadRenderable>(flatShader, x1, x2, x3, x4, color);
-    HierarchicalRenderable::addChild(systemRenderable, p1Renderable);
+    //HierarchicalRenderable::addChild(systemRenderable, p1Renderable);
+
+    //Textured plane
+    filename = "../textures/grass_texture.png";
+    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(20,5,1));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.5, 10));
+
+    texPlane->setParentTransform(parentTransformation);
+    texPlane->setMaterial(pearl);
+    //viewer.addRenderable(texPlane);
+
+    HierarchicalRenderable::addChild(systemRenderable, texPlane);
+
+
+
+
+    // textured bunny
+    TexturedMeshRenderablePtr bunny =
+            std::make_shared<TexturedMeshRenderable>(
+                    texShader, "../meshes/bunny.obj", "../textures/texturedBunny.png");
+    bunny->setMaterial(pearl);
+    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0, 4, 1.0));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
+    bunny->setParentTransform( parentTransformation );
+    viewer.addRenderable(bunny);
+
+
+
 
     x1 = glm::vec3(-10, 10, 5);
     x2 = glm::vec3(-10, 10, 0);
@@ -423,4 +490,5 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //Activate collision and set the restitution coefficient to 1.0
     system->setCollisionsDetection(true);
     system->setRestitution(1.0f);
+
 }
