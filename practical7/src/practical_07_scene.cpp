@@ -375,6 +375,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     HierarchicalRenderable::addChild(systemRenderable, otherRenderable);
 
     //Initialize four planes to create walls arround the particles
+/*
     glm::vec3 planeNormal, planePoint;
     planeNormal = glm::vec3(-1, 0, 0);
     planePoint = glm::vec3(50, 0, 0);
@@ -400,7 +401,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     planePoint = glm::vec3(0, 0, 0);
     PlanePtr floor = std::make_shared<Plane>( planeNormal, planePoint);
     system->addPlaneObstacle(floor);
-
+*/
 
 
 
