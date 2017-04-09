@@ -330,6 +330,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     glm::mat4 parentTransformation(1.0), localTransformation(1.0);
     std::string filename;
     MaterialPtr pearl = Material::Pearl();
+    MaterialPtr custom = Material::Custom();
     ShaderProgramPtr texShader
             = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
                                               "../shaders/textureFragment.glsl");
@@ -415,21 +416,94 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //HierarchicalRenderable::addChild(systemRenderable, p1Renderable);
 
     //Textured plane
-    filename = "../textures/grass_texture.png";
-    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+    filename = "../textures/fadeaway_bk.tga";
+    TexturedPlaneRenderablePtr texPlane_bk = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::rotate( parentTransformation, -float(M_PI_2), glm::vec3(0,1,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,50,1));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.5, -50));
+
+    texPlane_bk->setParentTransform(parentTransformation);
+    texPlane_bk->setMaterial(custom);
+
+    HierarchicalRenderable::addChild(systemRenderable, texPlane_bk);
+
+
+    filename = "../textures/fadeaway_lf.tga";
+    TexturedPlaneRenderablePtr texPlane_lf = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
+    //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,50,1));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.5, -50));
+
+    texPlane_lf->setParentTransform(parentTransformation);
+    texPlane_lf->setMaterial(custom);
+
+    HierarchicalRenderable::addChild(systemRenderable, texPlane_lf);
+
+
+     filename = "../textures/fadeaway_ft.tga";
+    TexturedPlaneRenderablePtr texPlane_ft = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
 
     parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(20,5,1));
-    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.5, 10));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,50,1));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.5, -50));
 
-    texPlane->setParentTransform(parentTransformation);
-    texPlane->setMaterial(pearl);
-    //viewer.addRenderable(texPlane);
+    texPlane_ft->setParentTransform(parentTransformation);
+    texPlane_ft->setMaterial(custom);
 
-    HierarchicalRenderable::addChild(systemRenderable, texPlane);
+    HierarchicalRenderable::addChild(systemRenderable, texPlane_ft);
+
+    filename = "../textures/fadeaway_rt.tga";
+    TexturedPlaneRenderablePtr texPlane_rt = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
+    //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,50,1));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.5, 50));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI), glm::vec3(0,1,0));
+    texPlane_rt->setParentTransform(parentTransformation);
+    texPlane_rt->setMaterial(custom);
+
+    HierarchicalRenderable::addChild(systemRenderable, texPlane_rt);
 
 
+
+    filename = "../textures/fadeaway_up.tga";
+    TexturedPlaneRenderablePtr texPlane_up = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(0,0,1));
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI), glm::vec3(0,1,0));
+
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,100,1));
+    //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -50));
+    //parentTransformation = glm::rotate( parentTransformation, float(M_PI), glm::vec3(0,1,0));
+    texPlane_up->setParentTransform(parentTransformation);
+    texPlane_up->setMaterial(custom);
+
+    HierarchicalRenderable::addChild(systemRenderable, texPlane_up);
+
+
+    
+    filename = "../textures/fadeaway_dn.tga";
+    TexturedPlaneRenderablePtr texPlane_dn = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(0,0,1));
+    parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI), glm::vec3(0,1,0));
+
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,100,1));
+    //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    //parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -50));
+    //parentTransformation = glm::rotate( parentTransformation, float(M_PI), glm::vec3(0,1,0));
+    texPlane_dn->setParentTransform(parentTransformation);
+    texPlane_dn->setMaterial(custom);
+
+    HierarchicalRenderable::addChild(systemRenderable, texPlane_dn);
+/*
 
 
     // textured bunny
@@ -469,7 +543,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     color = glm::vec4(0.2, 0.4, 0.4, 1.0);
     PlaneRenderablePtr p4Renderable = std::make_shared<QuadRenderable>(flatShader, x1, x2, x3, x4, color);
     HierarchicalRenderable::addChild(systemRenderable, p4Renderable);
-
+*/
     //Initialize a force field that apply only to the mobile particle
     glm::vec3 nullForce(0.0, 0.0, 0.0);
     std::vector<ParticlePtr> vParticle;
