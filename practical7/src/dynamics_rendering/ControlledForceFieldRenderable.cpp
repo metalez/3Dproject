@@ -61,7 +61,6 @@ ControlledForceFieldRenderable::ControlledForceFieldRenderable(ShaderProgramPtr 
         m_normals.push_back(glm::vec3(1.0,0.0,0.0));
         m_normals.push_back(glm::vec3(1.0,0.0,0.0));
     }
-
     //Create buffers
     glGenBuffers(1, &m_pBuffer); //vertices
     glGenBuffers(1, &m_cBuffer); //colors
@@ -145,8 +144,55 @@ void ControlledForceFieldRenderable::do_animate(float time)
 
         m_force->setForce(m_status.movement * m_status.intensity);
     }
+
+    
+
+
+    //Update camera
+    ParticlePtr p=m_force->getParticles().front();
+
+   
+    glm::vec3 pos = p->getPosition();
+    glm::vec3 aim = p->getPosition()  + 2.0f* m_status.movement;
+    glm::vec3 dir= aim-pos;
+    glm::normalize(dir);
+    glm::vec3 up = glm::vec3(0,0,2);
+    glm::vec3 cam= pos -dir-dir+up;
+    camera->setPosition(cam);
+
+    camera->setViewMatrix( glm::lookAt(cam, pos+up, glm::vec3(0,0,1)) );
+
+    //update box
+    glm::mat4 parentTransformation(0.0);
+    glm::mat4 transformation(1.0);
+
+   
+    parentTransformation=texPlane_bk->basePos; 
+    transformation = glm::translate(glm::mat4(1.0) ,pos);
+    texPlane_bk->setParentTransform(parentTransformation+transformation);
+
+    parentTransformation=texPlane_lf->basePos; 
+    transformation = glm::translate(glm::mat4(1.0) ,pos);
+    texPlane_lf->setParentTransform(parentTransformation+transformation);
+
+    parentTransformation=texPlane_rt->basePos; 
+    transformation = glm::translate(glm::mat4(1.0) ,pos);
+    texPlane_rt->setParentTransform(parentTransformation+transformation);
+    
+    parentTransformation=texPlane_ft->basePos; 
+    transformation = glm::translate(glm::mat4(1.0) ,pos);
+    texPlane_ft->setParentTransform(parentTransformation+transformation);
+
+    parentTransformation=texPlane_up->basePos; 
+    transformation = glm::translate(glm::mat4(1.0) ,pos);
+    texPlane_up->setParentTransform(parentTransformation+transformation);
+
+
+
     m_status.last_time = time;
 }
+
+
 
 void ControlledForceFieldRenderable::do_draw()
 {

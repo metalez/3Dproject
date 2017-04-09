@@ -132,6 +132,8 @@ void Viewer::draw()
         r->unbindShaderProgram();
     }
 
+
+
     //Refresh the viewer.m_window
     if( clock::now() < m_modeInformationTextDisappearanceTime )
     {

@@ -14,6 +14,7 @@ public :
     ~TexturedPlaneRenderable();
     TexturedPlaneRenderable(ShaderProgramPtr shaderProgram, const std::string& textureFilename);
     void setMaterial(const MaterialPtr& material);
+    glm::mat4 basePos;
 
 private:
     void do_draw();

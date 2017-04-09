@@ -37,6 +37,9 @@
 class Camera
 {
 public:
+
+    
+
     /**@brief Construction.
      *
      * Create a default camera located at (0,0,-5), looking at the position

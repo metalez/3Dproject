@@ -3,7 +3,8 @@
 
 #include "../HierarchicalRenderable.hpp"
 #include "../dynamics/ConstantForceField.hpp"
-
+#include "../Camera.hpp"
+#include "../texturing/TexturedPlaneRenderable.hpp"
 /**@brief Status of a ControlledForceField.
  *
  * This status holds important variables that are used to control a force
@@ -61,6 +62,12 @@ public:
   ControlledForceFieldRenderable(ShaderProgramPtr program,ConstantForceFieldPtr forceField );
   ~ControlledForceFieldRenderable();
 
+ Camera* camera;
+ TexturedPlaneRenderablePtr texPlane_bk; 
+ TexturedPlaneRenderablePtr texPlane_ft;
+ TexturedPlaneRenderablePtr texPlane_lf; 
+ TexturedPlaneRenderablePtr texPlane_rt;
+ TexturedPlaneRenderablePtr texPlane_up;
 private:
 
   virtual void do_keyPressedEvent(sf::Event& e);
@@ -70,6 +77,7 @@ private:
 
   ControlledForceFieldStatus m_status;
   ConstantForceFieldPtr m_force;
+
 
   std::vector<glm::vec3> m_positions;
   std::vector<glm::vec4> m_colors;

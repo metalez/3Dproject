@@ -20,6 +20,7 @@ Camera::~Camera()
 
 void Camera::animate(float time)
 {
+
 }
 
 const glm::mat4& Camera::viewMatrix() const
