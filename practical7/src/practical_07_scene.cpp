@@ -583,10 +583,10 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     std::shared_ptr<teachers::CircleRenderable> nose
         = std::make_shared<teachers::CircleRenderable>(flatShader);
-    translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.0,bz+0.5-0.05));
+    translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.4,bz+0.6-0.05));
     rotationM= glm::rotate(glm::mat4(1.0), (float)(M_PI/2.0), glm::vec3(1,0,0));
     nose -> setParentTransform(rotationM);
-    scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.1,0.1,1));
+    scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.1,0.1,0.5));
     nose -> setLocalTransform(translationM*scaleM);
 
 
