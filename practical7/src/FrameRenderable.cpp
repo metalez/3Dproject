@@ -41,12 +41,12 @@ void FrameRenderable::initAttributes()
     m_positions.push_back( glm::vec3(0,0,0) );
     m_positions.push_back( glm::vec3(0,0,1) );
 
-    m_colors.push_back( glm::vec4(1,0,0,1) );
-    m_colors.push_back( glm::vec4(1,0,0,1) );
-    m_colors.push_back( glm::vec4(0,1,0,1) );
-    m_colors.push_back( glm::vec4(0,1,0,1) );
-    m_colors.push_back( glm::vec4(0,0,1,1) );
-    m_colors.push_back( glm::vec4(0,0,1,1) );
+    m_colors.push_back( glm::vec4(25,250,50,1) );
+    m_colors.push_back( glm::vec4(55,250,250,1) );
+    m_colors.push_back( glm::vec4(255,20,250,1) );
+    m_colors.push_back( glm::vec4(55,250,20,1) );
+    m_colors.push_back( glm::vec4(25,20,250,1) );
+    m_colors.push_back( glm::vec4(255,250,250,1) );
 }
 
 void FrameRenderable::do_draw()
