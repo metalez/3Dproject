@@ -26,6 +26,16 @@
 #include "../include/texturing/MipMapCubeRenderable.hpp"
 #include "../include/texturing/TexturedMeshRenderable.hpp"
 
+#include "../teachers/CircleRenderable.hpp"
+#include "../include/FrameRenderable.hpp"
+#include "../teachers/CylinderRenderable.hpp"
+#include "../teachers/MeshRenderable.hpp"
+#include "../include/dynamics_rendering/ParticleRenderable.hpp"
+#include <glm/gtc/type_ptr.hpp>
+
+
+#include "../teachers/Geometries.hpp"
+
 void practical07_particles(Viewer& viewer,
     DynamicSystemPtr& system, DynamicSystemRenderablePtr& systemRenderable);
 
@@ -520,4 +530,69 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     system->setCollisionsDetection(true);
     system->setRestitution(1.0f);
 
+
+    // create all shaders of this scene, then add them to the viewer
+    //ShaderProgramPtr flatShader
+    //    = std::make_shared<ShaderProgram>("../shaders/flatVertex.glsl",
+    //                                      "../shaders/flatFragment.glsl");
+    //viewer.addShaderProgram(flatShader); 
+    // values for position base
+    float bx  = 0.0 , by = 0.0 , bz = 0.0;
+    // values for particle
+    //glm::vec3 px(0.0, 0.0, 0.0);
+    //glm::vec3 pv(0.0, 0.0, 0.0);
+    //float pm = 1.0, pr = 1.0;
+    px = glm::vec3(0.0, 0.0, 0.5);
+    pv = glm::vec3(0.0, 0.0, 0.0);
+    ParticlePtr particle = std::make_shared<Particle>( px, pv, pm, pr);
+
+    // Temporary variables to use to define transformation
+    glm::mat4 rotationM(1.0), rot1(1.0), rot2(1.0);
+    glm::mat4 scaleM(1.0);
+    glm::mat4 translationM(1.0);
+
+    // create renderable objects
+    viewer.addRenderable(std::make_shared<FrameRenderable>(flatShader));
+
+    // First Base Shpere of Snowman
+    std::shared_ptr<ParticleRenderable> Pbase
+        = std::make_shared<ParticleRenderable>(flatShader, particle);
+    translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
+    Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
+    // Second middle sphere of snowman
+    ParticlePtr particle_mid = std::make_shared<Particle>( px, pv, pm, 3*pr/4);
+
+    std::shared_ptr<ParticleRenderable> Pmid
+        = std::make_shared<ParticleRenderable>(flatShader, particle_mid);
+    translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
+    Pmid -> setParentTransform(translationM);
+    //Head sphere of the snowman
+    ParticlePtr particle_head = std::make_shared<Particle>( px, pv, pm, pr/2);
+    std::shared_ptr<ParticleRenderable> Phead
+        = std::make_shared<ParticleRenderable>(flatShader, particle_head);
+    translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
+    Phead -> setParentTransform(translationM); 
+
+    //Create Snowman hat
+    std::shared_ptr<teachers::CylinderRenderable> hat
+        = std::make_shared<teachers::CylinderRenderable>(flatShader);
+    translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.0,bz+0.7-0.05));
+    hat -> setParentTransform(translationM);
+    scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.5,0.5,1.0));
+    hat -> setLocalTransform(scaleM);
+
+    std::shared_ptr<teachers::CircleRenderable> nose
+        = std::make_shared<teachers::CircleRenderable>(flatShader);
+    translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.0,bz+0.5-0.05));
+    rotationM= glm::rotate(glm::mat4(1.0), (float)(M_PI/2.0), glm::vec3(1,0,0));
+    nose -> setParentTransform(rotationM);
+    scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.1,0.1,1));
+    nose -> setLocalTransform(translationM*scaleM);
+
+
+    HierarchicalRenderable::addChild(Pbase, Pmid);
+    HierarchicalRenderable::addChild(Pmid, Phead);
+    HierarchicalRenderable::addChild(Phead,hat);
+    HierarchicalRenderable::addChild(Phead,nose);
+    viewer.addRenderable(Pbase);
 }
