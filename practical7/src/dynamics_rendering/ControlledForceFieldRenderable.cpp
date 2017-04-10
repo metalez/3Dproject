@@ -157,7 +157,7 @@ void ControlledForceFieldRenderable::do_animate(float time)
     glm::vec3 dir= aim-pos;
     glm::normalize(dir);
     glm::vec3 up = glm::vec3(0,0,2);
-    glm::vec3 cam= pos -dir-dir+up;
+    glm::vec3 cam= pos -dir-dir-dir+up;
     camera->setPosition(cam);
 
     camera->setViewMatrix( glm::lookAt(cam, pos+up, glm::vec3(0,0,1)) );

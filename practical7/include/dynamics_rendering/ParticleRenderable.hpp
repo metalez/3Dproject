@@ -25,12 +25,12 @@ class ParticleRenderable : public HierarchicalRenderable
         ParticleRenderable(ShaderProgramPtr program, ParticlePtr particle);
 
         ~ParticleRenderable();
-
+	ParticlePtr m_particle;
     private:
         void do_draw();
         void do_animate(float time);
 
-        ParticlePtr m_particle;
+        
 
         size_t m_numberOfVertices;
         std::vector<glm::vec3> m_positions;

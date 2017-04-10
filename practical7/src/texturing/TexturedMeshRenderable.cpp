@@ -146,6 +146,9 @@ void TexturedMeshRenderable::do_draw()
 
 void TexturedMeshRenderable::do_animate(float time)
 {
+	//glm::mat4 transfo = glm::translate(glm::mat4(1.0), anchor->getPosition()); 
+	//ssetParentTransform(transfo);
+
 }
 
 void TexturedMeshRenderable::setMaterial(const MaterialPtr& material)

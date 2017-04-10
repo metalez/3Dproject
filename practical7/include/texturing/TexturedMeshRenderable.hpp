@@ -4,7 +4,7 @@
 #include "./../HierarchicalRenderable.hpp"
 #include "./../lighting/Material.hpp"
 #include "../lighting/LightedMeshRenderable.hpp"
-
+#include "../dynamics_rendering/ParticleRenderable.hpp"
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
@@ -19,7 +19,7 @@ public:
         const std::string& meshFilename,
         const std::string& textureFilename);
     void setMaterial(const MaterialPtr& material);
-
+    ParticlePtr anchor;
 protected:
     void do_draw();
     void do_animate(float time);
