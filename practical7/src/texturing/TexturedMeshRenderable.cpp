@@ -5,7 +5,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
-
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 TexturedMeshRenderable::TexturedMeshRenderable(ShaderProgramPtr shaderProgram,
         const std::string& meshFilename, const std::string& textureFilename) :
@@ -144,11 +145,35 @@ void TexturedMeshRenderable::do_draw()
     }
 }
 
-void TexturedMeshRenderable::do_animate(float time)
-{
-	//glm::mat4 transfo = glm::translate(glm::mat4(1.0), anchor->getPosition()); 
-	//ssetParentTransform(transfo);
+void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
+    if (e.key.code == sf::Keyboard::A) {
+  
+    glm::vec3 pv(1.0, 2.0, 3.0);
+    float pm = 1.0, pr = 1.0;
+    ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition(), pv, pm, pr);
+    
+    //ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(flatShader, mobile);
+    //TODO ad it to the system
 
+    } 
+}
+
+void TexturedMeshRenderable::do_animate(float time)
+{	
+	glm::mat4 transfo;
+	if (anchor!=NULL){
+		transfo = glm::translate(glm::mat4(1.0), anchor->getPosition());
+	 	transfo = glm::rotate( transfo, float(M_PI_2), glm::vec3(1,0,0));
+		transfo = glm::rotate( transfo, float(M_PI), glm::vec3(0,1,0));
+	}	
+	if (field!=NULL){
+		float angle = field->m_status.angle;
+
+		transfo = glm::rotate( transfo, float(angle), glm::vec3(0,1,0));
+	}
+	if (field!=NULL || anchor!=NULL){
+		setParentTransform(transfo);
+	}
 }
 
 void TexturedMeshRenderable::setMaterial(const MaterialPtr& material)

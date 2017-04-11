@@ -5,6 +5,7 @@
 #include "./../lighting/Material.hpp"
 #include "../lighting/LightedMeshRenderable.hpp"
 #include "../dynamics_rendering/ParticleRenderable.hpp"
+#include "../dynamics_rendering/ControlledForceFieldRenderable.hpp"
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
@@ -19,11 +20,13 @@ public:
         const std::string& meshFilename,
         const std::string& textureFilename);
     void setMaterial(const MaterialPtr& material);
-    ParticlePtr anchor;
+    ParticlePtr anchor=NULL;
+    ControlledForceFieldRenderablePtr field=NULL;
+  virtual void do_keyPressedEvent(sf::Event& e);
 protected:
     void do_draw();
     void do_animate(float time);
-
+    
     std::vector<glm::vec3> m_positions;
     std::vector<glm::vec3> m_normals;
     std::vector<unsigned int> m_indices;

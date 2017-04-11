@@ -383,7 +383,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //Create a particleRenderable for each particle of the system
     //Add them to the system renderable
     ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(flatShader, mobile);
-    HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
+    //HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
 
     // textured bunny
     TexturedMeshRenderablePtr bunny =
@@ -394,10 +394,12 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     glm::mat4 transfo(1.0);
     transfo =glm::translate(transfo,particlePos);
     //parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    transfo=glm::rotate( transfo, float(M_PI_2), glm::vec3(1,0,0));
+    transfo=glm::rotate( transfo, float(M_PI_2), glm::vec3(0,0,1));
+    //transfo=glm::rotate( transfo, float(M_PI), glm::vec3(0,0,1));
     bunny->setParentTransform( glm::scale(transfo , glm::vec3(2,2,2)) );
     bunny->anchor=mobile;
-    HierarchicalRenderable::addChild( mobileRenderable,bunny);    
+    viewer.addRenderable(bunny);
+    //HierarchicalRenderable::addChild( mobile,bunny);    
 
 
     ParticleRenderablePtr otherRenderable = std::make_shared<ParticleRenderable>(flatShader, other);
@@ -440,7 +442,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
     parentTransformation = glm::rotate( parentTransformation, -float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,40,1));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,30,1));
     parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -49));
 
     texPlane_bk->setParentTransform(parentTransformation);
@@ -454,7 +456,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
     //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,40,1));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,30,1));
     parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0.003, -49));
 
     texPlane_lf->setParentTransform(parentTransformation);
@@ -468,7 +470,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,40,1));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,30,1));
     parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -49));
 
     texPlane_ft->setParentTransform(parentTransformation);
@@ -481,7 +483,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI_2), glm::vec3(1,0,0));
     //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,40,1));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(100,30,1));
     parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, 49));
     parentTransformation = glm::rotate( parentTransformation, float(M_PI), glm::vec3(0,1,0));
     texPlane_rt->setParentTransform(parentTransformation);
@@ -499,7 +501,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     parentTransformation = glm::scale( parentTransformation, glm::vec3(100,100,1));
     //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -20));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -15));
     //parentTransformation = glm::rotate( parentTransformation, float(M_PI), glm::vec3(0,1,0));
     texPlane_up->setParentTransform(parentTransformation);
     texPlane_up->setMaterial(custom);
@@ -546,7 +548,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     vParticle.push_back(mobile);
     ConstantForceFieldPtr force = std::make_shared<ConstantForceField>(vParticle, nullForce);
     system->addForceField(force);
-
+    
     //Initialize a renderable for the force field applied on the mobile particle.
     //This renderable allows to modify the attribute of the force by key/mouse events
     //Add this renderable to the systemRenderable.
@@ -558,9 +560,10 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     forceRenderable->texPlane_rt =texPlane_rt;
     forceRenderable->texPlane_up =texPlane_up;
     HierarchicalRenderable::addChild(systemRenderable, forceRenderable);
+    bunny->field=forceRenderable;
 
     //Add a damping force field to the mobile.
-    DampingForceFieldPtr dampingForceField = std::make_shared<DampingForceField>(vParticle, 0.9);
+    DampingForceFieldPtr dampingForceField = std::make_shared<DampingForceField>(vParticle, 15.9);
     system->addForceField(dampingForceField);
 
     //Activate collision and set the restitution coefficient to 1.0
@@ -633,6 +636,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     HierarchicalRenderable::addChild(Phead,nose);
     viewer.addRenderable(Pbase);
 
+
     // textured tree
     TexturedMeshRenderablePtr tree =
         std::make_shared<TexturedMeshRenderable>(
@@ -665,4 +669,5 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
     tree3->setParentTransform( parentTransformation );
     viewer.addRenderable(tree3);
+
 }

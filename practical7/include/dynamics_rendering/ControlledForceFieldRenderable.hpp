@@ -68,6 +68,7 @@ public:
  TexturedPlaneRenderablePtr texPlane_lf; 
  TexturedPlaneRenderablePtr texPlane_rt;
  TexturedPlaneRenderablePtr texPlane_up;
+ ControlledForceFieldStatus m_status;
 private:
 
   virtual void do_keyPressedEvent(sf::Event& e);
@@ -75,7 +76,7 @@ private:
   virtual void do_animate(float time);
   virtual void do_draw();
 
-  ControlledForceFieldStatus m_status;
+  
   ConstantForceFieldPtr m_force;
 
 
