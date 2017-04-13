@@ -63,7 +63,7 @@ void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load)
     DynamicSystemPtr system = std::make_shared<DynamicSystem>();
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
-    system->setDt(0.0001);
+    system->setDt(0.01);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
