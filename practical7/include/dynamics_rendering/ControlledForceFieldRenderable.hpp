@@ -5,6 +5,7 @@
 #include "../dynamics/ConstantForceField.hpp"
 #include "../Camera.hpp"
 #include "../texturing/TexturedPlaneRenderable.hpp"
+#include "../dynamics_rendering/DynamicSystemRenderable.hpp"
 /**@brief Status of a ControlledForceField.
  *
  * This status holds important variables that are used to control a force

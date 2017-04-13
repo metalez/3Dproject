@@ -68,6 +68,8 @@ public:
      */
     glm::vec3 projectOnPlane(const glm::vec3& p);
 
+    bool isGround=false;
+
 private:
     glm::vec3 m_n; /*!< Plane normal. Points x on the plane satisfy dot(m_n,x)=m_d */
     float m_d; /*!< m_d = dot(m_n,p) for a given point p on the plane */

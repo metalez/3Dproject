@@ -146,16 +146,25 @@ void TexturedMeshRenderable::do_draw()
 }
 
 void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
-    if (e.key.code == sf::Keyboard::A) {
-  
-    glm::vec3 pv(1.0, 2.0, 3.0);
-    float pm = 1.0, pr = 1.0;
-    ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition(), pv, pm, pr);
-    
-    //ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(flatShader, mobile);
-    //TODO ad it to the system
+    if (system!=NULL){
+        if (e.key.code == sf::Keyboard::M) {  
 
-    } 
+
+        float angle = field->m_status.angle;
+
+
+        glm::vec3 pv(cos(angle), sin(angle), 0.1);
+        float pm = 0.75, pr = 0.1;
+        ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(cos(angle),sin(angle),1), pv, pm, pr);
+        system->addParticle( mobile );
+        ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
+        HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
+        gravity->addParticle(mobile);
+        } 
+        if (e.key.code == sf::Keyboard::J) {  
+            anchor->setPosition(anchor->getPosition()+glm::vec3(0,0,2));
+        } 
+    }
 }
 
 void TexturedMeshRenderable::do_animate(float time)

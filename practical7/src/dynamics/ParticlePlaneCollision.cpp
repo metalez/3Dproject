@@ -17,22 +17,36 @@ void ParticlePlaneCollision::do_solveCollision()
     if (m_particle->isFixed())
         return;
 
-    glm::vec3 q = m_particle->getPosition();
-    glm::vec3 proj = m_plane->projectOnPlane(q);
-    float particlePlaneDist = glm::distance(q, proj);
-    float penetration =  m_particle->getRadius()  - particlePlaneDist;
-    glm::vec3 k = glm::normalize(m_plane->normal());
+    if (!m_plane->isGround)
+    {
+      glm::vec3 q = m_particle->getPosition();
+      glm::vec3 proj = m_plane->projectOnPlane(q);
+      float particlePlaneDist = glm::distance(q, proj);
+      float penetration =  m_particle->getRadius()  - particlePlaneDist;
+      glm::vec3 k = glm::normalize(m_plane->normal());
 
-    m_particle->setPosition(q - penetration*k);
+      m_particle->setPosition(q - penetration*k);
 
 
-    //Compute post-collision velocity
-    glm::vec3 prev_v = m_particle->getVelocity();
-    float proj_v = (1.0f + m_restitution)
-        * glm::dot(k, prev_v)
-        / (1.0 / m_particle->getMass());
-    glm::vec3 new_v = prev_v - proj_v/m_particle->getMass()*k;
-    m_particle->setVelocity(new_v);
+      //Compute post-collision velocity
+      glm::vec3 prev_v = m_particle->getVelocity();
+      float proj_v = (1.0f + m_restitution)
+          * glm::dot(k, prev_v)
+          / (1.0 / m_particle->getMass());
+      glm::vec3 new_v = prev_v - proj_v/m_particle->getMass()*k;
+      m_particle->setVelocity(new_v);    
+    }else{
+      glm::vec3 q = m_particle->getPosition();
+      glm::vec3 proj = m_plane->projectOnPlane(q);
+      float particlePlaneDist = glm::distance(q, proj);
+      float penetration =  m_particle->getRadius()  - particlePlaneDist;
+      glm::vec3 k = glm::normalize(m_plane->normal());
+      glm::vec3 newpos = q - penetration*k;
+      newpos.z=0;
+
+      m_particle->setPosition(newpos);
+    }
+
 
 
 

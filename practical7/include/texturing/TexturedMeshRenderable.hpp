@@ -22,7 +22,12 @@ public:
     void setMaterial(const MaterialPtr& material);
     ParticlePtr anchor=NULL;
     ControlledForceFieldRenderablePtr field=NULL;
-  virtual void do_keyPressedEvent(sf::Event& e);
+    virtual void do_keyPressedEvent(sf::Event& e);
+
+    DynamicSystemPtr system=NULL;
+    DynamicSystemRenderablePtr systemRenderable=NULL;
+    ConstantForceFieldPtr gravity = NULL;
+    ShaderProgramPtr shader = NULL;
 protected:
     void do_draw();
     void do_animate(float time);

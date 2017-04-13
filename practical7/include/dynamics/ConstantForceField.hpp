@@ -35,6 +35,7 @@ public:
      * @param particles The new set of particles.
      */
     void setParticles(const std::vector<ParticlePtr>& particles);
+    void addParticle(ParticlePtr particle);
 
     /**@brief Access to the force applied to all influenced particles.
      *

@@ -63,7 +63,7 @@ void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load)
     DynamicSystemPtr system = std::make_shared<DynamicSystem>();
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
-    system->setDt(0.01);
+    system->setDt(0.0001);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
@@ -341,6 +341,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     std::string filename;
     MaterialPtr pearl = Material::Pearl();
     MaterialPtr custom = Material::Custom();
+    MaterialPtr customClear = Material::CustomClear();
     ShaderProgramPtr texShader
             = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
                                               "../shaders/textureFragment.glsl");
@@ -398,7 +399,11 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //transfo=glm::rotate( transfo, float(M_PI), glm::vec3(0,0,1));
     bunny->setParentTransform( glm::scale(transfo , glm::vec3(2,2,2)) );
     bunny->anchor=mobile;
+    bunny->system=system;
+    bunny->systemRenderable=systemRenderable;
+    bunny->shader=flatShader;
     viewer.addRenderable(bunny);
+
     //HierarchicalRenderable::addChild( mobile,bunny);    
 
 
@@ -431,6 +436,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     planeNormal = glm::vec3(0, 0, 1);
     planePoint = glm::vec3(0, 0, 0);
     PlanePtr floor = std::make_shared<Plane>( planeNormal, planePoint);
+    floor->isGround=true;
     system->addPlaneObstacle(floor);
 
 
@@ -510,7 +516,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
 
     
-    filename = "../textures/fadeaway_dn.tga";
+    filename = "../textures/fadeaway_dn2.tga";
     TexturedPlaneRenderablePtr texPlane_dn = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
 
 
@@ -518,10 +524,10 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 	parentTransformation = glm::rotate( glm::mat4(1.0), float(M_PI), glm::vec3(0,1,0));
     parentTransformation = glm::scale( parentTransformation, glm::vec3(200,200,1));
     //parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    //parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, -50));
+    parentTransformation = glm::translate( parentTransformation, glm::vec3(0, 0, 1.5));
     //parentTransformation = glm::rotate( parentTransformation, float(M_PI), glm::vec3(0,1,0));
     texPlane_dn->setParentTransform(parentTransformation);
-    texPlane_dn->setMaterial(custom);
+    texPlane_dn->setMaterial(customClear);
     texPlane_dn->basePos=parentTransformation;
     HierarchicalRenderable::addChild(systemRenderable, texPlane_dn);
 
@@ -548,7 +554,12 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     vParticle.push_back(mobile);
     ConstantForceFieldPtr force = std::make_shared<ConstantForceField>(vParticle, nullForce);
     system->addForceField(force);
-    
+
+    //Initialize a force field that apply to all the particles of the system to simulate gravity
+    //Add it to the system as a force field
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
+    system->addForceField(gravityForceField);
+    bunny->gravity=gravityForceField;
     //Initialize a renderable for the force field applied on the mobile particle.
     //This renderable allows to modify the attribute of the force by key/mouse events
     //Add this renderable to the systemRenderable.
@@ -561,7 +572,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     forceRenderable->texPlane_up =texPlane_up;
     HierarchicalRenderable::addChild(systemRenderable, forceRenderable);
     bunny->field=forceRenderable;
-
+    bunny->system=system;
     //Add a damping force field to the mobile.
     DampingForceFieldPtr dampingForceField = std::make_shared<DampingForceField>(vParticle, 15.9);
     system->addForceField(dampingForceField);
@@ -594,80 +605,80 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // create renderable objects
     viewer.addRenderable(std::make_shared<FrameRenderable>(flatShader));
 
-    // First Base Shpere of Snowman
-    std::shared_ptr<ParticleRenderable> Pbase
-        = std::make_shared<ParticleRenderable>(flatShader, particle);
-    translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
-    Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
-    // Second middle sphere of snowman
-    ParticlePtr particle_mid = std::make_shared<Particle>( px, pv, pm, 3*pr/4);
+    // // First Base Shpere of Snowman
+    // std::shared_ptr<ParticleRenderable> Pbase
+    //     = std::make_shared<ParticleRenderable>(flatShader, particle);
+    // translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
+    // Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
+    // // Second middle sphere of snowman
+    // ParticlePtr particle_mid = std::make_shared<Particle>( px, pv, pm, 3*pr/4);
 
-    std::shared_ptr<ParticleRenderable> Pmid
-        = std::make_shared<ParticleRenderable>(flatShader, particle_mid);
-    translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
-    Pmid -> setParentTransform(translationM);
-    //Head sphere of the snowman
-    ParticlePtr particle_head = std::make_shared<Particle>( px, pv, pm, pr/2);
-    std::shared_ptr<ParticleRenderable> Phead
-        = std::make_shared<ParticleRenderable>(flatShader, particle_head);
-    translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
-    Phead -> setParentTransform(translationM); 
+    // std::shared_ptr<ParticleRenderable> Pmid
+    //     = std::make_shared<ParticleRenderable>(flatShader, particle_mid);
+    // translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
+    // Pmid -> setParentTransform(translationM);
+    // //Head sphere of the snowman
+    // ParticlePtr particle_head = std::make_shared<Particle>( px, pv, pm, pr/2);
+    // std::shared_ptr<ParticleRenderable> Phead
+    //     = std::make_shared<ParticleRenderable>(flatShader, particle_head);
+    // translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
+    // Phead -> setParentTransform(translationM); 
 
-    //Create Snowman hat
-    std::shared_ptr<teachers::CylinderRenderable> hat
-        = std::make_shared<teachers::CylinderRenderable>(flatShader);
-    translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.0,bz+0.7-0.05));
-    hat -> setParentTransform(translationM);
-    scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.5,0.5,1.0));
-    hat -> setLocalTransform(scaleM);
+    // //Create Snowman hat
+    // std::shared_ptr<teachers::CylinderRenderable> hat
+    //     = std::make_shared<teachers::CylinderRenderable>(flatShader);
+    // translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.0,bz+0.7-0.05));
+    // hat -> setParentTransform(translationM);
+    // scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.5,0.5,1.0));
+    // hat -> setLocalTransform(scaleM);
 
-    std::shared_ptr<teachers::CircleRenderable> nose
-        = std::make_shared<teachers::CircleRenderable>(flatShader);
-    translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.4,bz+0.6-0.05));
-    rotationM= glm::rotate(glm::mat4(1.0), (float)(M_PI/2.0), glm::vec3(1,0,0));
-    nose -> setParentTransform(rotationM);
-    scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.1,0.1,0.5));
-    nose -> setLocalTransform(translationM*scaleM);
-
-
-    HierarchicalRenderable::addChild(Pbase, Pmid);
-    HierarchicalRenderable::addChild(Pmid, Phead);
-    HierarchicalRenderable::addChild(Phead,hat);
-    HierarchicalRenderable::addChild(Phead,nose);
-    viewer.addRenderable(Pbase);
+    // std::shared_ptr<teachers::CircleRenderable> nose
+    //     = std::make_shared<teachers::CircleRenderable>(flatShader);
+    // translationM = glm::translate(glm::mat4(),glm::vec3(0.0,0.4,bz+0.6-0.05));
+    // rotationM= glm::rotate(glm::mat4(1.0), (float)(M_PI/2.0), glm::vec3(1,0,0));
+    // nose -> setParentTransform(rotationM);
+    // scaleM = glm::scale(glm::mat4(1.0), glm::vec3(0.1,0.1,0.5));
+    // nose -> setLocalTransform(translationM*scaleM);
 
 
-    // textured tree
-    TexturedMeshRenderablePtr tree =
-        std::make_shared<TexturedMeshRenderable>(
-            texShader, "../meshes/fir.obj", "../textures/branch.png");
-    tree->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(24, 4, 0.0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    tree->setParentTransform( parentTransformation );
-    viewer.addRenderable(tree);
+    // HierarchicalRenderable::addChild(Pbase, Pmid);
+    // HierarchicalRenderable::addChild(Pmid, Phead);
+    // HierarchicalRenderable::addChild(Phead,hat);
+    // HierarchicalRenderable::addChild(Phead,nose);
+    // viewer.addRenderable(Pbase);
 
-    // textured tree2
-    TexturedMeshRenderablePtr tree2 =
-        std::make_shared<TexturedMeshRenderable>(
-            texShader, "../meshes/fir.obj", "../textures/branch.png");
-    tree2->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(20, 14, 0.0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(1.5,2,2));
-    tree2->setParentTransform( parentTransformation );
-    viewer.addRenderable(tree2);
 
-    // textured tree3
-    TexturedMeshRenderablePtr tree3 =
-        std::make_shared<TexturedMeshRenderable>(
-            texShader, "../meshes/fir.obj", "../textures/branch.png");
-    tree3->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(34, 3, 0.0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
-    tree3->setParentTransform( parentTransformation );
-    viewer.addRenderable(tree3);
+    // // textured tree
+    // TexturedMeshRenderablePtr tree =
+    //     std::make_shared<TexturedMeshRenderable>(
+    //         texShader, "../meshes/fir.obj", "../textures/branch.png");
+    // tree->setMaterial(pearl);
+    // parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(24, 4, 0.0));
+    // parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    // parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
+    // tree->setParentTransform( parentTransformation );
+    // viewer.addRenderable(tree);
+
+    // // textured tree2
+    // TexturedMeshRenderablePtr tree2 =
+    //     std::make_shared<TexturedMeshRenderable>(
+    //         texShader, "../meshes/fir.obj", "../textures/branch.png");
+    // tree2->setMaterial(pearl);
+    // parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(20, 14, 0.0));
+    // parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    // parentTransformation = glm::scale( parentTransformation, glm::vec3(1.5,2,2));
+    // tree2->setParentTransform( parentTransformation );
+    // viewer.addRenderable(tree2);
+
+    // // textured tree3
+    // TexturedMeshRenderablePtr tree3 =
+    //     std::make_shared<TexturedMeshRenderable>(
+    //         texShader, "../meshes/fir.obj", "../textures/branch.png");
+    // tree3->setMaterial(pearl);
+    // parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(34, 3, 0.0));
+    // parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    // parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
+    // tree3->setParentTransform( parentTransformation );
+    // viewer.addRenderable(tree3);
 
 }

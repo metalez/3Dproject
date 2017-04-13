@@ -26,7 +26,10 @@ void ConstantForceField::setParticles(const std::vector<ParticlePtr>& particles)
 {
     m_particles = particles;
 }
-
+void ConstantForceField::addParticle(ParticlePtr particle)
+{
+    m_particles.push_back(particle);
+}
 const glm::vec3& ConstantForceField::getForce()
 {
     return m_force;
