@@ -28,6 +28,7 @@ public:
     DynamicSystemRenderablePtr systemRenderable=NULL;
     ConstantForceFieldPtr gravity = NULL;
     ShaderProgramPtr shader = NULL;
+    glm::vec3 basePos;
 protected:
     void do_draw();
     void do_animate(float time);
