@@ -393,16 +393,25 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     bunny->setMaterial(custom);
     glm::vec3 particlePos= mobileRenderable->m_particle->getPosition();
     glm::mat4 transfo(1.0);
-    transfo =glm::translate(transfo,particlePos);
+    //transfo = glm::rotate( transfo, float(M_PI_2), glm::vec3(0,1,0));
+    transfo =glm::rotate(transfo,float(M_PI_2), glm::vec3(0,1,0));
     //parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    transfo=glm::rotate( transfo, float(M_PI_2), glm::vec3(0,0,1));
+   // transfo=glm::rotate( transfo, float(M_PI_2), glm::vec3(0,0,1));
     //transfo=glm::rotate( transfo, float(M_PI), glm::vec3(0,0,1));
-    bunny->setParentTransform( glm::scale(transfo , glm::vec3(2,2,2)) );
+    
+    //transfo = glm::rotate( transfo, float(M_PI), glm::vec3(0,1,0));
+    bunny->setParentTransform( glm::scale(transfo, glm::vec3(2,2,2)) );
+
     bunny->anchor=mobile;
     bunny->system=system;
     bunny->systemRenderable=systemRenderable;
     bunny->shader=flatShader;
+    bunny->basePos=glm::vec3(0,0,0);
     viewer.addRenderable(bunny);
+
+
+
+
 
     //HierarchicalRenderable::addChild( mobile,bunny);    
 
@@ -709,14 +718,34 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //Pmid -> setParentTransform(translationM);
     Pmid->setAnchor(particle);
 
-    //Head sphere of the snowman
-    ParticlePtr particle_head = std::make_shared<Particle>( px+glm::vec3(0,0,1.35), pv, 0, pr/2);
-    std::shared_ptr<ParticleRenderable> Phead
-        = std::make_shared<ParticleRenderable>(flatShader, particle_head);
-    //translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
-    //Phead -> setParentTransform(translationM); 
-    Phead->setAnchor(particle);
+    // //Head sphere of the snowman
+    // ParticlePtr particle_head = std::make_shared<Particle>( px+glm::vec3(0,0,1.35), pv, 0, pr/2);
+    // std::shared_ptr<ParticleRenderable> Phead
+    //     = std::make_shared<ParticleRenderable>(flatShader, particle_head);
+    // //translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
+    // //Phead -> setParentTransform(translationM); 
+    // Phead->setAnchor(particle);
 
+
+
+    // textured hat
+    TexturedMeshRenderablePtr hat =
+        std::make_shared<TexturedMeshRenderable>(
+            texShader, "../meshes/HatEatingHat.obj", "../textures/Hateatinghat1Tex.png");
+    hat->setMaterial(custom);
+    particlePos= particle->getPosition();
+    transfo =glm::translate(glm::mat4(1.0),particlePos+glm::vec3(0,0,2));
+
+    //parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
+    //transfo=glm::rotate( transfo, float(M_PI_2), glm::vec3(0,0,1));
+    //transfo=glm::rotate( transfo, float(M_PI), glm::vec3(0,0,1));
+    hat->setParentTransform( glm::scale(transfo , glm::vec3(1.2,1.2,1.2)) );
+    hat->anchor=particle;
+    //bunny->system=system;
+    //bunny->systemRenderable=systemRenderable;
+    hat->shader=texShader;
+    hat->basePos=glm::vec3(1,0,1.75);
+    viewer.addRenderable(hat);
     // //Create Snowman hat
     // std::shared_ptr<teachers::CylinderRenderable> hat
     //     = std::make_shared<teachers::CylinderRenderable>(flatShader);
@@ -735,7 +764,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
 
     HierarchicalRenderable::addChild(Pbase, Pmid);
-    HierarchicalRenderable::addChild(Pmid, Phead);
+    // HierarchicalRenderable::addChild(Pmid, Phead);
     // HierarchicalRenderable::addChild(Phead,hat);
     // HierarchicalRenderable::addChild(Phead,nose);
     viewer.addRenderable(Pbase);

@@ -171,7 +171,9 @@ void TexturedMeshRenderable::do_animate(float time)
 {	
 	glm::mat4 transfo;
 	if (anchor!=NULL){
-		transfo = glm::translate(glm::mat4(1.0), anchor->getPosition());
+		  
+        transfo = glm::translate(glm::mat4(1.0), anchor->getPosition());
+        transfo = glm::translate(transfo, basePos);
 	 	transfo = glm::rotate( transfo, float(M_PI_2), glm::vec3(1,0,0));
 		transfo = glm::rotate( transfo, float(M_PI), glm::vec3(0,1,0));
 	}	
