@@ -439,7 +439,11 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     floor->isGround=true;
     system->addPlaneObstacle(floor);
 
-
+    planeNormal = glm::vec3(0, 1, 1);
+    planePoint = glm::vec3(0, 0, 0);
+    PlanePtr floor2 = std::make_shared<Plane>( planeNormal, planePoint);
+    floor->isGround=true;
+    system->addPlaneObstacle(floor2);
 
 
     //Textured plane
