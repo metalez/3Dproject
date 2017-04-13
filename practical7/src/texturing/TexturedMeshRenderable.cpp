@@ -162,7 +162,7 @@ void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
         gravity->addParticle(mobile);
         } 
         if (e.key.code == sf::Keyboard::J) {  
-            anchor->setPosition(anchor->getPosition()+glm::vec3(0,0,2));
+            anchor->setPosition(anchor->getPosition()+glm::vec3(0,0,3));
         } 
     }
 }

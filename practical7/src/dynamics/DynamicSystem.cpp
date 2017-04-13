@@ -8,7 +8,7 @@
 #include "./../../include/dynamics/DynamicSystem.hpp"
 #include "./../../include/dynamics/ParticlePlaneCollision.hpp"
 #include "./../../include/dynamics/ParticleParticleCollision.hpp"
-
+#include "./../../include/dynamics/ParticleLimitedPlaneCollision.hpp"
 
 DynamicSystem::DynamicSystem() :
     m_dt(0.1), m_restitution(1.0), m_handleCollisions(true)
@@ -81,7 +81,10 @@ void DynamicSystem::addPlaneObstacle(PlanePtr planeObstacle)
 {
     m_planeObstacles.push_back(planeObstacle);
 }
-
+void DynamicSystem::addLimitedPlaneObstacle(LimitedPlanePtr planeObstacle)
+{
+    m_limitedplaneObstacles.push_back(planeObstacle);
+}
 SolverPtr DynamicSystem::getSolver()
 {
     return m_solver;
@@ -117,6 +120,18 @@ void DynamicSystem::detectCollisions()
             }
         }
     }
+    //Detect particle limitedplane collisions
+    for (ParticlePtr p : m_particles) {
+        for (LimitedPlanePtr o : m_limitedplaneObstacles) {
+            if (testParticleLimitedPlane(p, o)) {
+                ParticleLimitedPlaneCollisionPtr c =
+                    std::make_shared<ParticleLimitedPlaneCollision>(p,o,m_restitution);
+                m_collisions.push_back(c);
+            }
+        }
+    }
+
+
 }
 
 void DynamicSystem::solveCollisions()

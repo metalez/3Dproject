@@ -8,7 +8,7 @@
 #include "Particle.hpp"
 #include "Plane.hpp"
 #include "Solver.hpp"
-
+#include "LimitedPlane.hpp"
 /**@brief A dynamic system.
  *
  * This class represents a dynamic system made of particles, force fields and
@@ -39,6 +39,8 @@ private:
      * The set of obstacles that would repel the particles after collisions.
      */
     std::vector<PlanePtr> m_planeObstacles;
+
+    std::vector<LimitedPlanePtr> m_limitedplaneObstacles;
 
     /**@brief The solver of the dynamic system.
      *
@@ -101,7 +103,7 @@ public:
      * @param planeObstacle The plane to add to this system.
      */
     void addPlaneObstacle(PlanePtr planeObstacle);
-
+    void addLimitedPlaneObstacle(LimitedPlanePtr planeObstacle);
     /**@brief Access to the solver used to resolve the dynamic system.
      *
      * Get the dynamic system solver used by this system.
