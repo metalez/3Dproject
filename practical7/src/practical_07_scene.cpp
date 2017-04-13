@@ -63,7 +63,7 @@ void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load)
     DynamicSystemPtr system = std::make_shared<DynamicSystem>();
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
-    system->setDt(0.01);
+    system->setDt(0.001);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
@@ -648,11 +648,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     ConstantForceFieldPtr force = std::make_shared<ConstantForceField>(vParticle, nullForce);
     system->addForceField(force);
 
-    //Initialize a force field that apply to all the particles of the system to simulate gravity
-    //Add it to the system as a force field
-    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
-    system->addForceField(gravityForceField);
-    bunny->gravity=gravityForceField;
+
     //Initialize a renderable for the force field applied on the mobile particle.
     //This renderable allows to modify the attribute of the force by key/mouse events
     //Add this renderable to the systemRenderable.
@@ -686,7 +682,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //glm::vec3 px(0.0, 0.0, 0.0);
     //glm::vec3 pv(0.0, 0.0, 0.0);
     //float pm = 1.0, pr = 1.0;
-    px = glm::vec3(0.0, 0.0, 0.5);
+    px = glm::vec3(5.0, 5.0, 3);
     pv = glm::vec3(0.0, 0.0, 0.0);
     ParticlePtr particle = std::make_shared<Particle>( px, pv, pm, pr);
 
@@ -698,24 +694,28 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // create renderable objects
     viewer.addRenderable(std::make_shared<FrameRenderable>(flatShader));
 
-    // // First Base Shpere of Snowman
-    // std::shared_ptr<ParticleRenderable> Pbase
-    //     = std::make_shared<ParticleRenderable>(flatShader, particle);
-    // translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
-    // Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
-    // // Second middle sphere of snowman
-    // ParticlePtr particle_mid = std::make_shared<Particle>( px, pv, pm, 3*pr/4);
+    // First Base Shpere of Snowman
+    std::shared_ptr<ParticleRenderable> Pbase
+        = std::make_shared<ParticleRenderable>(flatShader, particle);
+    //translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
+    //Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
+    system->addParticle(particle);
 
-    // std::shared_ptr<ParticleRenderable> Pmid
-    //     = std::make_shared<ParticleRenderable>(flatShader, particle_mid);
-    // translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
-    // Pmid -> setParentTransform(translationM);
-    // //Head sphere of the snowman
-    // ParticlePtr particle_head = std::make_shared<Particle>( px, pv, pm, pr/2);
-    // std::shared_ptr<ParticleRenderable> Phead
-    //     = std::make_shared<ParticleRenderable>(flatShader, particle_head);
-    // translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
-    // Phead -> setParentTransform(translationM); 
+    // Second middle sphere of snowman
+    ParticlePtr particle_mid = std::make_shared<Particle>( px+glm::vec3(0,0,0.75), pv, 0, 3*pr/4);
+    std::shared_ptr<ParticleRenderable> Pmid
+        = std::make_shared<ParticleRenderable>(flatShader, particle_mid);
+    //translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
+    //Pmid -> setParentTransform(translationM);
+    Pmid->setAnchor(particle);
+
+    //Head sphere of the snowman
+    ParticlePtr particle_head = std::make_shared<Particle>( px+glm::vec3(0,0,1.35), pv, 0, pr/2);
+    std::shared_ptr<ParticleRenderable> Phead
+        = std::make_shared<ParticleRenderable>(flatShader, particle_head);
+    //translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*5/4-0.05 )); //0.05 shift value so the two speheres seem connected
+    //Phead -> setParentTransform(translationM); 
+    Phead->setAnchor(particle);
 
     // //Create Snowman hat
     // std::shared_ptr<teachers::CylinderRenderable> hat
@@ -734,11 +734,11 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // nose -> setLocalTransform(translationM*scaleM);
 
 
-    // HierarchicalRenderable::addChild(Pbase, Pmid);
-    // HierarchicalRenderable::addChild(Pmid, Phead);
+    HierarchicalRenderable::addChild(Pbase, Pmid);
+    HierarchicalRenderable::addChild(Pmid, Phead);
     // HierarchicalRenderable::addChild(Phead,hat);
     // HierarchicalRenderable::addChild(Phead,nose);
-    // viewer.addRenderable(Pbase);
+    viewer.addRenderable(Pbase);
 
 
     // // textured tree
@@ -773,5 +773,12 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
     // tree3->setParentTransform( parentTransformation );
     // viewer.addRenderable(tree3);
+
+
+        //Initialize a force field that apply to all the particles of the system to simulate gravity
+    //Add it to the system as a force field
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
+    system->addForceField(gravityForceField);
+    bunny->gravity=gravityForceField;
 
 }

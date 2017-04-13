@@ -19,6 +19,7 @@ ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticleP
     m_particle(particle),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
+    basePos=particle->getPosition();
     double radius = 1.0;
     int thetaStep = 20;
     int phiStep = 10;
@@ -151,4 +152,18 @@ void ParticleRenderable::do_draw()
 }
 
 void ParticleRenderable::do_animate(float time)
-{}
+{ 
+    glm::mat4 transfo;
+
+    if (anchor!=NULL){
+        transfo = glm::translate(glm::mat4(1.0), anchor->getPosition());
+        transfo = glm::translate(transfo, basePos);
+        setParentTransform(transfo);
+    }
+
+
+}
+void ParticleRenderable::setAnchor(ParticlePtr particle){
+    anchor=particle;
+    basePos=basePos-anchor->getPosition()-anchor->getPosition();
+}

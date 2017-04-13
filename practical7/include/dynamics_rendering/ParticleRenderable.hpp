@@ -25,7 +25,10 @@ class ParticleRenderable : public HierarchicalRenderable
         ParticleRenderable(ShaderProgramPtr program, ParticlePtr particle);
 
         ~ParticleRenderable();
+        void setAnchor(ParticlePtr particle);
 	ParticlePtr m_particle;
+    glm::vec3 basePos;
+    ParticlePtr anchor;
     private:
         void do_draw();
         void do_animate(float time);

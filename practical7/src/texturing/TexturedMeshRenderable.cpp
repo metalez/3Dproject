@@ -153,9 +153,9 @@ void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
         float angle = field->m_status.angle;
 
 
-        glm::vec3 pv(cos(angle), sin(angle), 0.1);
-        float pm = 0.75, pr = 0.1;
-        ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(cos(angle),sin(angle),1), pv, pm, pr);
+        glm::vec3 pv(cos(angle), sin(angle), 0.01);
+        float pm = 1, pr = 0.1;
+        ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(cos(angle),sin(angle),0), pv, pm, pr);
         system->addParticle( mobile );
         ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
         HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
