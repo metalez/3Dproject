@@ -809,24 +809,55 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // tree2->setParentTransform( parentTransformation );
     // viewer.addRenderable(tree2);
 
-    // // textured tree3
-    // TexturedMeshRenderablePtr tree3 =
-    //     std::make_shared<TexturedMeshRenderable>(
-    //         texShader, "../meshes/fir.obj", "../textures/branch.png");
-    // tree3->setMaterial(pearl);
-    // parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(34, 3, 0.0));
-    // parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    // parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
-    // tree3->setParentTransform( parentTransformation );
-    // viewer.addRenderable(tree3);
+     // textured tree3
+     /*TexturedMeshRenderablePtr tree3 =
+        std::make_shared<TexturedMeshRenderable>(
+            texShader, "../meshes/fir.obj", "../textures/branch.png");
+     tree3->setMaterial(pearl);
+     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(34, 3, 0.0));
+     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+     parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
+     tree3->setParentTransform( parentTransformation );
+     viewer.addRenderable(tree3);*/
 
 
-        //Initialize a force field that apply to all the particles of the system to simulate gravity
+    DynamicSystemPtr system2 = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solver2 = std::make_shared<EulerExplicitSolver>();
+    system2->setSolver(solver2);
+    system2->setDt(0.001);
+    //Create a renderable associated to the dynamic system
+    DynamicSystemRenderablePtr systemRenderable2 = std::make_shared<DynamicSystemRenderable>(system2);
+    viewer.addRenderable(systemRenderable2);
+system2->setCollisionsDetection(true);
+system2->setRestitution(1.0f);
+    // snow
+    std::shared_ptr<Particle>* s = new std::shared_ptr<Particle>[100];
+    std::shared_ptr<ParticleRenderable>* sr = new std::shared_ptr<ParticleRenderable>[100];
+    for(int i = 0; i < 17; i++) {
+	  for(int j = 0; j < 17; j++) {
+	  	int nj = j + rand()%2;
+		int ni = i + rand()%2;
+		int size = 10 + rand()%15;
+		px = glm::vec3(ni*4, nj*4, size);
+		s[i] = std::make_shared<Particle>( px, pv, pm, pr/18);
+		sr[i] = std::make_shared<ParticleRenderable>(flatShader, s[i]);
+		system2->addParticle(s[i]);
+		viewer.addRenderable(sr[i]);
+	  }  
+    }
+
+    
+
+    //Initialize a force field that apply to all the particles of the system to simulate gravity
     //Add it to the system as a force field
-    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-2} );
     system->addForceField(gravityForceField);
     bunny->gravity=gravityForceField;
     Pbase->gravity=gravityForceField;
+
+
+    ConstantForceFieldPtr gravityForceField2 = std::make_shared<ConstantForceField>(system2->getParticles(), glm::vec3{0.01,0.01,-0.2} );
+    system2->addForceField(gravityForceField2);
 
 
 }
