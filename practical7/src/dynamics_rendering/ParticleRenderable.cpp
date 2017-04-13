@@ -158,12 +158,38 @@ void ParticleRenderable::do_animate(float time)
     if (anchor!=NULL){
         transfo = glm::translate(glm::mat4(1.0), anchor->getPosition());
         transfo = glm::translate(transfo, basePos);
-        setParentTransform(transfo);
+        transfo=glm::scale(transfo, scale);
+        setLocalTransform(transfo);
+    }
+
+
+    if (shader!=NULL && system!=NULL && gravity!=NULL && anchor!=NULL && int(time)%3==0){
+        float pm = 1, pr = 0.1;
+        ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(1,0,-0.2), glm::vec3(1,0,0), pm, pr);
+        system->addParticle( mobile );
+        ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
+        HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
+        gravity->addParticle(mobile);
+        mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(-1,0,-0.2), glm::vec3(-1,0,0), pm, pr);
+        system->addParticle( mobile );
+        mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
+        HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
+        gravity->addParticle(mobile);
+        mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(0,1,-0.2), glm::vec3(0,1,0), pm, pr);
+        system->addParticle( mobile );
+        mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
+        HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
+        gravity->addParticle(mobile);
+        mobile = std::make_shared<Particle>( anchor->getPosition()+ glm::vec3(0,-1,-0.2), glm::vec3(0,-1,0), pm, pr);
+        system->addParticle( mobile );
+        mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
+        HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
+        gravity->addParticle(mobile);
     }
 
 
 }
 void ParticleRenderable::setAnchor(ParticlePtr particle){
     anchor=particle;
-    basePos=basePos-anchor->getPosition()-anchor->getPosition();
+    
 }

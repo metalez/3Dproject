@@ -29,6 +29,7 @@ public:
     ConstantForceFieldPtr gravity = NULL;
     ShaderProgramPtr shader = NULL;
     glm::vec3 basePos;
+    void setAnchor(ParticlePtr particle);
 protected:
     void do_draw();
     void do_animate(float time);

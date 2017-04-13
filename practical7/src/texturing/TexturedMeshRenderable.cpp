@@ -146,7 +146,7 @@ void TexturedMeshRenderable::do_draw()
 }
 
 void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
-    if (system!=NULL){
+    if (system!=NULL ){
         if (e.key.code == sf::Keyboard::M) {  
 
 
@@ -155,7 +155,7 @@ void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
 
         glm::vec3 pv(cos(angle), sin(angle), 0.01);
         float pm = 1, pr = 0.1;
-        ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(cos(angle),sin(angle),0), pv, pm, pr);
+        ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(cos(angle),sin(angle),-0.2), pv, pm, pr);
         system->addParticle( mobile );
         ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
         HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
@@ -169,13 +169,18 @@ void TexturedMeshRenderable::do_keyPressedEvent(sf::Event& e){
 
 void TexturedMeshRenderable::do_animate(float time)
 {	
-	glm::mat4 transfo;
+	glm::mat4 transfo(1.0);
 	if (anchor!=NULL){
 		  
-        transfo = glm::translate(glm::mat4(1.0), anchor->getPosition());
+        
         transfo = glm::translate(transfo, basePos);
+        glm::vec3 pos = anchor->getPosition();
+
+        transfo = glm::translate(transfo, pos);
+
 	 	transfo = glm::rotate( transfo, float(M_PI_2), glm::vec3(1,0,0));
 		transfo = glm::rotate( transfo, float(M_PI), glm::vec3(0,1,0));
+
 	}	
 	if (field!=NULL){
 		float angle = field->m_status.angle;
@@ -185,9 +190,15 @@ void TexturedMeshRenderable::do_animate(float time)
 	if (field!=NULL || anchor!=NULL){
 		setParentTransform(transfo);
 	}
+    
 }
 
 void TexturedMeshRenderable::setMaterial(const MaterialPtr& material)
 {
     m_material = material;
+}
+
+void TexturedMeshRenderable::setAnchor(ParticlePtr particle){
+    anchor=particle;
+    basePos=basePos;
 }

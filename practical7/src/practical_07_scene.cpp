@@ -69,7 +69,7 @@ void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load)
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
     //It also handles some of the key/mouse events
     DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
-    viewer.addRenderable(systemRenderable);
+    
 
     //Populate the dynamic system with particles, forcefields
     //and create renderables associated to them for visualization.
@@ -89,7 +89,7 @@ void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load)
         default:
             break;
     }
-
+    viewer.addRenderable(systemRenderable);
     //Finally, run the animation
     viewer.startAnimation();
 }
@@ -693,7 +693,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //float pm = 1.0, pr = 1.0;
     px = glm::vec3(5.0, 5.0, 3);
     pv = glm::vec3(0.0, 0.0, 0.0);
-    ParticlePtr particle = std::make_shared<Particle>( px, pv, pm, pr);
+    ParticlePtr particle = std::make_shared<Particle>( px, pv, 4, pr);
 
     // Temporary variables to use to define transformation
     glm::mat4 rotationM(1.0), rot1(1.0), rot2(1.0);
@@ -709,6 +709,21 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
     //Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
     system->addParticle(particle);
+    Pbase->system=system;
+    Pbase->shader=flatShader;
+    Pbase->setAnchor(particle);
+    Pbase->basePos=glm::vec3(0,0,0);
+    Pbase->systemRenderable=systemRenderable;
+
+
+    //Add a damping force field to the mobile.
+   
+    std::vector<ParticlePtr> vParticle2;
+    vParticle2.push_back(particle);
+    DampingForceFieldPtr dampingForceField2 = std::make_shared<DampingForceField>(vParticle2, 240.9);
+    system->addForceField(dampingForceField2);
+
+
 
     // Second middle sphere of snowman
     ParticlePtr particle_mid = std::make_shared<Particle>( px+glm::vec3(0,0,0.75), pv, 0, 3*pr/4);
@@ -717,7 +732,8 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
     //Pmid -> setParentTransform(translationM);
     Pmid->setAnchor(particle);
-
+    Pmid->basePos=glm::vec3(0,0,1.50);
+    Pmid->scale=glm::vec3(0.75,0.75,0.75);
     // //Head sphere of the snowman
     // ParticlePtr particle_head = std::make_shared<Particle>( px+glm::vec3(0,0,1.35), pv, 0, pr/2);
     // std::shared_ptr<ParticleRenderable> Phead
@@ -733,18 +749,18 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
         std::make_shared<TexturedMeshRenderable>(
             texShader, "../meshes/HatEatingHat.obj", "../textures/Hateatinghat1Tex.png");
     hat->setMaterial(custom);
-    particlePos= particle->getPosition();
-    transfo =glm::translate(glm::mat4(1.0),particlePos+glm::vec3(0,0,2));
+    //particlePos= particle->getPosition();
+    //transfo =glm::translate(glm::mat4(1.0),particlePos+glm::vec3(0,0,2));
 
     //parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
     //transfo=glm::rotate( transfo, float(M_PI_2), glm::vec3(0,0,1));
     //transfo=glm::rotate( transfo, float(M_PI), glm::vec3(0,0,1));
-    hat->setParentTransform( glm::scale(transfo , glm::vec3(1.2,1.2,1.2)) );
-    hat->anchor=particle;
+    //hat->setParentTransform(transfo);
     //bunny->system=system;
     //bunny->systemRenderable=systemRenderable;
-    hat->shader=texShader;
+    //hat->shader=texShader;
     hat->basePos=glm::vec3(1,0,1.75);
+    hat->setAnchor(particle);
     viewer.addRenderable(hat);
     // //Create Snowman hat
     // std::shared_ptr<teachers::CylinderRenderable> hat
@@ -763,11 +779,12 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // nose -> setLocalTransform(translationM*scaleM);
 
 
-    HierarchicalRenderable::addChild(Pbase, Pmid);
+    //HierarchicalRenderable::addChild(Pbase, Pmid);
     // HierarchicalRenderable::addChild(Pmid, Phead);
     // HierarchicalRenderable::addChild(Phead,hat);
     // HierarchicalRenderable::addChild(Phead,nose);
     viewer.addRenderable(Pbase);
+ viewer.addRenderable(Pmid);
 
 
     // // textured tree
@@ -809,5 +826,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
     system->addForceField(gravityForceField);
     bunny->gravity=gravityForceField;
+    Pbase->gravity=gravityForceField;
+
 
 }

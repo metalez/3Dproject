@@ -3,7 +3,11 @@
 
 #include "../HierarchicalRenderable.hpp"
 #include "../dynamics/Particle.hpp"
-
+#include "./../HierarchicalRenderable.hpp"
+#include "./../lighting/Material.hpp"
+#include "../lighting/LightedMeshRenderable.hpp"
+#include "../dynamics_rendering/ParticleRenderable.hpp"
+#include "../dynamics_rendering/ControlledForceFieldRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -28,7 +32,12 @@ class ParticleRenderable : public HierarchicalRenderable
         void setAnchor(ParticlePtr particle);
 	ParticlePtr m_particle;
     glm::vec3 basePos;
+    glm::vec3 scale=glm::vec3(1,1,1);
     ParticlePtr anchor;
+    DynamicSystemPtr system=NULL;
+    DynamicSystemRenderablePtr systemRenderable=NULL;
+    ConstantForceFieldPtr gravity = NULL;
+    ShaderProgramPtr shader = NULL;
     private:
         void do_draw();
         void do_animate(float time);
