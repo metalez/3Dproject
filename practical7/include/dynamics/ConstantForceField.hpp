@@ -36,6 +36,7 @@ public:
      */
     void setParticles(const std::vector<ParticlePtr>& particles);
     void addParticle(ParticlePtr particle);
+    void rmParticle( );
 
     /**@brief Access to the force applied to all influenced particles.
      *

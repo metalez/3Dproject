@@ -171,6 +171,8 @@ void ParticleRenderable::do_animate(float time)
 
 
     if (shader!=NULL && system!=NULL && gravity!=NULL && anchor!=NULL && int(time)%3==0){
+        //gravity->rmParticle(mobile);
+
         float pm = 1, pr = 0.1;
         ParticlePtr mobile = std::make_shared<Particle>( anchor->getPosition()+glm::vec3(1,0,-0.2), glm::vec3(1,0,0), pm, pr);
         system->addParticle( mobile );
@@ -192,11 +194,6 @@ void ParticleRenderable::do_animate(float time)
         mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
         HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
         gravity->addParticle(mobile);
-
-
-    
-
-
     }
 
 

@@ -30,6 +30,11 @@ void ConstantForceField::addParticle(ParticlePtr particle)
 {
     m_particles.push_back(particle);
 }
+
+void ConstantForceField::rmParticle( )
+{
+    m_particles.pop_back();
+}
 const glm::vec3& ConstantForceField::getForce()
 {
     return m_force;

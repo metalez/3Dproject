@@ -852,7 +852,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     //Initialize a force field that apply to all the particles of the system to simulate gravity
     //Add it to the system as a force field
-    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-2} );
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-23} );
     system->addForceField(gravityForceField);
     bunny->gravity=gravityForceField;
     Pbase->gravity=gravityForceField;
