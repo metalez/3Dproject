@@ -511,30 +511,41 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
  viewer.addRenderable(Pmid);
 
 
-    // // textured tree
-    // TexturedMeshRenderablePtr tree =
-    //     std::make_shared<TexturedMeshRenderable>(
-    //         texShader, "../meshes/fir.obj", "../textures/branch.png");
-    // tree->setMaterial(pearl);
-    // parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(24, 4, 0.0));
-    // parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    // parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    // tree->setParentTransform( parentTransformation );
-    // viewer.addRenderable(tree);
+    // textured tree
+    TexturedMeshRenderablePtr tree =
+        std::make_shared<TexturedMeshRenderable>(
+            texShader, "../meshes/fir.obj", "../textures/branch.png");
+    tree->setMaterial(pearl);
+    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(24, 4, 0.0));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
+    tree->setParentTransform( parentTransformation );
+    viewer.addRenderable(tree);
 
-    // // textured tree2
-    // TexturedMeshRenderablePtr tree2 =
-    //     std::make_shared<TexturedMeshRenderable>(
-    //         texShader, "../meshes/fir.obj", "../textures/branch.png");
-    // tree2->setMaterial(pearl);
-    // parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(20, 14, 0.0));
-    // parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    // parentTransformation = glm::scale( parentTransformation, glm::vec3(1.5,2,2));
-    // tree2->setParentTransform( parentTransformation );
-    // viewer.addRenderable(tree2);
+    // textured tree2
+    TexturedMeshRenderablePtr tree2 =
+        std::make_shared<TexturedMeshRenderable>(
+            texShader, "../meshes/fir.obj", "../textures/branch.png");
+    tree2->setMaterial(pearl);
+    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(20, 14, 0.0));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(1.5,2,2));
+    tree2->setParentTransform( parentTransformation );
+    viewer.addRenderable(tree2);
 
-     // textured tree3
-     /*TexturedMeshRenderablePtr tree3 =
+    // textured tree2
+    TexturedMeshRenderablePtr tree22 =
+        std::make_shared<TexturedMeshRenderable>(
+            texShader, "../meshes/fir.obj", "../textures/branch.png");
+    tree22->setMaterial(pearl);
+    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(20, 8, 0.0));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(4,2,2));
+    tree22->setParentTransform( parentTransformation );
+    viewer.addRenderable(tree22);
+
+    // textured tree3
+     TexturedMeshRenderablePtr tree3 =
         std::make_shared<TexturedMeshRenderable>(
             texShader, "../meshes/fir.obj", "../textures/branch.png");
      tree3->setMaterial(pearl);
@@ -542,7 +553,18 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
      parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
      parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,4));
      tree3->setParentTransform( parentTransformation );
-     viewer.addRenderable(tree3);*/
+     viewer.addRenderable(tree3);
+
+     // textured tree4
+     TexturedMeshRenderablePtr tree4 =
+        std::make_shared<TexturedMeshRenderable>(
+            texShader, "../meshes/fir.obj", "../textures/branch.png");
+     tree4->setMaterial(pearl);
+     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(29, 3, 0.0));
+     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+     parentTransformation = glm::scale( parentTransformation, glm::vec3(5,3,1));
+     tree4->setParentTransform( parentTransformation );
+     viewer.addRenderable(tree4);
 
 
     DynamicSystemPtr system2 = std::make_shared<DynamicSystem>();
