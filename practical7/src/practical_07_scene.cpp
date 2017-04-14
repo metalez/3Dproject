@@ -417,19 +417,9 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //Activate collision and set the restitution coefficient to 1.0
     system->setCollisionsDetection(true);
     system->setRestitution(1.0f);
-
-
-    // create all shaders of this scene, then add them to the viewer
-    //ShaderProgramPtr flatShader
-    //    = std::make_shared<ShaderProgram>("../shaders/flatVertex.glsl",
-    //                                      "../shaders/flatFragment.glsl");
-    //viewer.addShaderProgram(flatShader); 
+ 
     // values for position base
     float bx  = 0.0 , by = 0.0 , bz = 0.0;
-    // values for particle
-    //glm::vec3 px(0.0, 0.0, 0.0);
-    //glm::vec3 pv(0.0, 0.0, 0.0);
-    //float pm = 1.0, pr = 1.0;
     px = glm::vec3(5.0, 5.0, 3);
     pv = glm::vec3(0.0, 0.0, 0.0);
     ParticlePtr particle = std::make_shared<Particle>( px, pv, 4, pr);
@@ -445,8 +435,6 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     // First Base Shpere of Snowman
     std::shared_ptr<ParticleRenderable> Pbase
         = std::make_shared<ParticleRenderable>(flatShader, particle);
-    //translationM = glm::translate(glm::mat4(),glm::vec3(bx,by,bz));
-    //Pbase->setLocalTransform(translationM*Pbase->getModelMatrix());
     system->addParticle(particle);
     Pbase->system=system;
     Pbase->shader=flatShader;
@@ -456,7 +444,6 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
 
     //Add a damping force field to the mobile.
-   
     std::vector<ParticlePtr> vParticle2;
     vParticle2.push_back(particle);
     DampingForceFieldPtr dampingForceField2 = std::make_shared<DampingForceField>(vParticle2, 240.9);
@@ -468,8 +455,6 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     ParticlePtr particle_mid = std::make_shared<Particle>( px+glm::vec3(0,0,0.75), pv, 0, 3*pr/4);
     std::shared_ptr<ParticleRenderable> Pmid
         = std::make_shared<ParticleRenderable>(flatShader, particle_mid);
-    //translationM = glm::translate(glm::mat4(1.0), glm::vec3(0,0,bz+pr*7/4-0.1)); //0.1 shift value so the two speheres seem connected
-    //Pmid -> setParentTransform(translationM);
     Pmid->setAnchor(particle);
     Pmid->basePos=glm::vec3(0,0,1.50);
     Pmid->scale=glm::vec3(0.75,0.75,0.75);
@@ -587,8 +572,6 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 	  }  
     }
 
-    
-
     //Initialize a force field that apply to all the particles of the system to simulate gravity
     //Add it to the system as a force field
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-23} );
@@ -599,6 +582,5 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 
     ConstantForceFieldPtr gravityForceField2 = std::make_shared<ConstantForceField>(system2->getParticles(), glm::vec3{0.0,0.0,-1.2} );
     system2->addForceField(gravityForceField2);
-
 
 }
