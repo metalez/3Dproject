@@ -837,10 +837,12 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
 	  for(int j = 0; j < 17; j++) {
 	  	int nj = rand()%40-20;
 		int ni = (rand()%40)-20;
-		int size = 10 + rand()%5;
+		int size = rand()%15;
 		px = glm::vec3(ni, nj, size);
 		s[i] = std::make_shared<Particle>( px, pv, pm, pr/18);
 		sr[i] = std::make_shared<ParticleRenderable>(flatShader, s[i]);
+        sr[i]->isSnow=true;
+        sr[i]->setAnchor(s[i]);
 		system2->addParticle(s[i]);
 		viewer.addRenderable(sr[i]);
 	  }  
@@ -856,7 +858,7 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     Pbase->gravity=gravityForceField;
 
 
-    ConstantForceFieldPtr gravityForceField2 = std::make_shared<ConstantForceField>(system2->getParticles(), glm::vec3{0.0,0.0,-0.2} );
+    ConstantForceFieldPtr gravityForceField2 = std::make_shared<ConstantForceField>(system2->getParticles(), glm::vec3{0.0,0.0,-1.2} );
     system2->addForceField(gravityForceField2);
 
 

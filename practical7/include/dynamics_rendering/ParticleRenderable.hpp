@@ -38,6 +38,7 @@ class ParticleRenderable : public HierarchicalRenderable
     DynamicSystemRenderablePtr systemRenderable=NULL;
     ConstantForceFieldPtr gravity = NULL;
     ShaderProgramPtr shader = NULL;
+    bool isSnow=false;
     private:
         void do_draw();
         void do_animate(float time);

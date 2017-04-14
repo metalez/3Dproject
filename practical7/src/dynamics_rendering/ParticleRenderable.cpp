@@ -153,6 +153,13 @@ void ParticleRenderable::do_draw()
 
 void ParticleRenderable::do_animate(float time)
 { 
+
+    if (isSnow && anchor!=NULL){
+        if ((anchor->getPosition()).z< 0){
+            anchor->incrPosition(glm::vec3(0,0,15));
+        }
+        return;
+    }
     glm::mat4 transfo;
 
     if (anchor!=NULL){
