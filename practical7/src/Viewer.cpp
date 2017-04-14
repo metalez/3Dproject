@@ -44,7 +44,7 @@ Viewer::~Viewer()
 Viewer::Viewer(float width, float height) :
     m_window{
         sf::VideoMode(width, height),
-            "Computer Graphics Practicals",
+            "Epic RABBIT vs SNOWMAN battle!",
             sf::Style::Default,
             sf::ContextSettings{ 24 /* depth*/, 8 /*stencil*/, 4 /*anti aliasing level*/, 4 /*GL major version*/, 0 /*GL minor version*/}
     },
