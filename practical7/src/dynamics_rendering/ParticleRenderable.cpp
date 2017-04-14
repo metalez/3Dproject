@@ -185,6 +185,11 @@ void ParticleRenderable::do_animate(float time)
         mobileRenderable = std::make_shared<ParticleRenderable>(shader, mobile);
         HierarchicalRenderable::addChild(systemRenderable, mobileRenderable);
         gravity->addParticle(mobile);
+
+
+    
+
+
     }
 
 

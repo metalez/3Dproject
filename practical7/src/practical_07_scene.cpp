@@ -828,17 +828,17 @@ void practical07_playPool(Viewer& viewer, DynamicSystemPtr& system, DynamicSyste
     //Create a renderable associated to the dynamic system
     DynamicSystemRenderablePtr systemRenderable2 = std::make_shared<DynamicSystemRenderable>(system2);
     viewer.addRenderable(systemRenderable2);
-system2->setCollisionsDetection(true);
-system2->setRestitution(1.0f);
+    system2->setCollisionsDetection(true);
+    system2->setRestitution(1.0f);
     // snow
     std::shared_ptr<Particle>* s = new std::shared_ptr<Particle>[100];
     std::shared_ptr<ParticleRenderable>* sr = new std::shared_ptr<ParticleRenderable>[100];
     for(int i = 0; i < 17; i++) {
 	  for(int j = 0; j < 17; j++) {
-	  	int nj = j + rand()%2;
-		int ni = i + rand()%2;
-		int size = 10 + rand()%15;
-		px = glm::vec3(ni*4, nj*4, size);
+	  	int nj = rand()%40-20;
+		int ni = (rand()%40)-20;
+		int size = 10 + rand()%5;
+		px = glm::vec3(ni, nj, size);
 		s[i] = std::make_shared<Particle>( px, pv, pm, pr/18);
 		sr[i] = std::make_shared<ParticleRenderable>(flatShader, s[i]);
 		system2->addParticle(s[i]);
@@ -856,7 +856,7 @@ system2->setRestitution(1.0f);
     Pbase->gravity=gravityForceField;
 
 
-    ConstantForceFieldPtr gravityForceField2 = std::make_shared<ConstantForceField>(system2->getParticles(), glm::vec3{0.01,0.01,-0.2} );
+    ConstantForceFieldPtr gravityForceField2 = std::make_shared<ConstantForceField>(system2->getParticles(), glm::vec3{0.0,0.0,-0.2} );
     system2->addForceField(gravityForceField2);
 
 
